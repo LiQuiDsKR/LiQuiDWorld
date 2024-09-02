@@ -4,3 +4,10 @@ main: com.liquidskr.liQuiDWorld.LiQuiDWorld
 author: LiQuiDsKR
 description: 치지직 액체 채널에서 개발하는 소사회 시뮬레이터 플러그인
 api-version: 1.21
+commands:
+  lqd:
+    description: LiQuiDWorld 명령어
+    usage: /<command> <subcommand> [args]
+    aliases: [liquidworld, lw]
+    permission: liquidworld.use
+    permission-message: You do not have permission to use this command.

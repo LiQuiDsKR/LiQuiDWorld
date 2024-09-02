@@ -26,6 +26,7 @@ public class MainMenuHandler implements Listener {
     private final GoldSendHandler goldSendHandler;
     private final GiftHandler giftHandler;
     private final StorageHandler storageHandler;
+    private final TradeHandler tradeHandler;
 
     public MainMenuHandler(JavaPlugin plugin, Map<UUID, PlayerData> playerDataMap) {
         this.plugin = plugin;
@@ -35,6 +36,7 @@ public class MainMenuHandler implements Listener {
         this.goldSendHandler = new GoldSendHandler(plugin, playerDataMap);
         this.giftHandler = new GiftHandler(plugin, playerDataMap);
         this.storageHandler = new StorageHandler(plugin, playerDataMap);
+        this.tradeHandler = new TradeHandler(plugin, playerDataMap);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -101,6 +103,18 @@ public class MainMenuHandler implements Listener {
 
         menu.setItem(4, storageItem);
 
+        // 거래 신청 버튼 생성 (에메랄드, 교환 신청, 금색)
+        ItemStack tradeItem = new ItemStack(Material.EMERALD);
+        ItemMeta tradeMeta = tradeItem.getItemMeta();
+        tradeMeta.setDisplayName("§6교환 신청");
+
+        List<String> tradeLore = new ArrayList<>();
+        tradeLore.add("§7클릭하여 교환 신청을 보냅니다.");
+        tradeMeta.setLore(tradeLore);
+        tradeItem.setItemMeta(tradeMeta);
+
+        menu.setItem(5, tradeItem);
+
         return menu;
     }
 
@@ -146,6 +160,10 @@ public class MainMenuHandler implements Listener {
 
             if (clickedItem.getType() == Material.CHISELED_BOOKSHELF && clickedItem.getItemMeta().getDisplayName().equals("§6보관함 열기")) {
                 storageHandler.openStorage(player);
+            }
+
+            if (clickedItem.getType() == Material.EMERALD && clickedItem.getItemMeta().getDisplayName().equals("§6교환 신청")) {
+                tradeHandler.openTradeRequestMenu(player);
             }
         }
     }

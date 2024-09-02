@@ -1,6 +1,9 @@
 package com.liquidskr.liQuiDWorld;
 
-import com.liquidskr.liQuiDWorld.menu.*;
+import com.liquidskr.liQuiDWorld.menu.MainMenuHandler;
+import com.liquidskr.liQuiDWorld.menu.GiftHandler;
+import com.liquidskr.liQuiDWorld.menu.StorageHandler;
+import com.liquidskr.liQuiDWorld.menu.TradeHandler;
 import com.liquidskr.liQuiDWorld.standard.PlayerData;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
@@ -14,10 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 public final class LiQuiDWorld extends JavaPlugin implements Listener {
 
     private Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+    private TradeHandler tradeHandler;
 
     @Override
     public void onEnable() {
@@ -29,9 +35,10 @@ public final class LiQuiDWorld extends JavaPlugin implements Listener {
         }
 
         // 메뉴 핸들러 초기화
+        GiftHandler giftHandler = new GiftHandler(this, playerDataMap);
         new MainMenuHandler(this, playerDataMap);
         new StorageHandler(this, playerDataMap);
-        new GiftHandler(this, playerDataMap);
+        this.tradeHandler = new TradeHandler(this, playerDataMap);
 
         // 플러그인 활성화 시 플레이어 데이터 로드
         loadAllPlayerData();
@@ -137,5 +144,28 @@ public final class LiQuiDWorld extends JavaPlugin implements Listener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (command.getName().equalsIgnoreCase("lqd")) {
+                if (args.length > 0) {
+                    if (args[0].equalsIgnoreCase("trade")) {
+                        if (args.length > 1) {
+                            if (args[1].equalsIgnoreCase("confirm")) {
+                                tradeHandler.confirmTrade(player);
+                                return true;
+                            } else if (args[1].equalsIgnoreCase("deny")) {
+                                tradeHandler.denyTrade(player);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
