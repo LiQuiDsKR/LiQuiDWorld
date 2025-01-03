@@ -5,6 +5,8 @@ import com.liquidskr.liQuiDWorld.menu.GiftHandler;
 import com.liquidskr.liQuiDWorld.menu.StorageHandler;
 import com.liquidskr.liQuiDWorld.menu.TradeHandler;
 import com.liquidskr.liQuiDWorld.standard.PlayerData;
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -113,7 +115,9 @@ public final class LiQuiDWorld extends JavaPlugin implements Listener {
     }
 
     private void loadAllPlayerData() {
-        // 모든 플레이어 데이터 파일 로드 로직 구현
+        for (UUID uuid : playerDataMap.keySet()) {
+            loadPlayerData(uuid);
+        }
         getLogger().info("모든 플레이어 데이터가 로드되었습니다.");
     }
 
@@ -124,7 +128,12 @@ public final class LiQuiDWorld extends JavaPlugin implements Listener {
         }
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(playerDataFile))) {
-            return (PlayerData) ois.readObject();
+            PlayerData playerData = (PlayerData) ois.readObject();
+            // 보관함 데이터를 복원
+            Inventory storage = Bukkit.createInventory(null, 45, "보관함");
+            storage.setContents(playerData.getStorage().getContents());
+            playerData.setStorage(storage); // 보관함 재설정
+            return playerData;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -137,6 +146,9 @@ public final class LiQuiDWorld extends JavaPlugin implements Listener {
             return;
         }
 
+        // 보관함 내용을 직렬화
+        playerData.setStorage(playerData.getStorage());
+
         File playerDataFile = new File(getDataFolder(), uuid.toString() + ".dat");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(playerDataFile))) {
             oos.writeObject(playerData);
@@ -145,6 +157,7 @@ public final class LiQuiDWorld extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

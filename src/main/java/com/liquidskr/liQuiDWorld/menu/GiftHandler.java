@@ -105,4 +105,8 @@ public class GiftHandler implements Listener {
             }
         }
     }
+    private void savePlayerData(PlayerData playerData) {
+        // playerData를 저장하는 로직 구현
+        // 예: 파일에 직렬화하여 저장
+    }
 }

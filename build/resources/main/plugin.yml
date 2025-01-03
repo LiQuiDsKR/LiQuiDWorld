@@ -2,7 +2,7 @@ name: LiQuiDWorld
 version: 1.0
 main: com.liquidskr.liQuiDWorld.LiQuiDWorld
 author: LiQuiDsKR
-description: 치지직 액체 채널에서 개발하는 소사회 시뮬레이터 플러그인
+description: 치지직 액체 채널에서 개발하는 재화 + 아이템 거래 유틸리티 플러그인
 api-version: 1.21
 commands:
   lqd:

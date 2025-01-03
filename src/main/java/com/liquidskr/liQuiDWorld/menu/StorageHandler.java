@@ -56,7 +56,12 @@ public class StorageHandler implements Listener {
             PlayerData playerData = playerDataMap.get(playerUUID);
             if (playerData != null) {
                 playerData.getStorage().setContents(inventory.getContents());
+
             }
         }
+    }
+    private void savePlayerData(PlayerData playerData) {
+        // playerData를 저장하는 로직 구현
+        // 예: 파일에 직렬화하여 저장
     }
 }
